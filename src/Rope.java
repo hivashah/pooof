@@ -104,8 +104,28 @@ public class Rope {
         System.out.println(positionInNode + " positionIndex");
 //        RopeNode root = search(root, i);
         System.out.println(root.data + " root.data");
+
+        RopeNode temp = realRoot ;
+        System.out.println(temp.right.data+"poooooooof");
+        System.out.println(temp.value);
         if (positionInNode==root.data.length()){
             System.out.println("akhareshe");
+            while (temp.left == null){
+                System.out.println("akhareshe2");
+                if (temp.left.right==root){
+                    RopeNode firstStringRoot = temp.left ;
+                    temp.left = null ;
+                    ropes.add(firstStringRoot);
+                    System.out.println(firstStringRoot.value + " fitstString.value");
+                    temp.value -= firstStringRoot.value;
+                    System.out.println(temp.value + " temp.value");
+                    ropes.add(temp);
+                    ropes.remove(realRoot);
+                    break;
+                }else {
+                    temp = temp.left;
+                }
+            }
         }else {
             RopeNode mainRope = new RopeNode();
             RopeNode ropeNodeL = new RopeNode();
@@ -192,17 +212,20 @@ public class Rope {
 //        status();
 
         RopeNode newRopeNode;
-        newRopeNode = concat(rope.root , rope1.root);
+//        newRopeNode = concat(rope.root , rope1.root);
 //        System.out.println(ropes.get(0).value + "pooooooof");
 
 
-        status();
+//        status();
 //        System.out.println(index(rope1.root,3));
 //        split(ropes.get(0),5);
 
-        System.out.println(getIndexInANode(ropes.get(0),13) + " dorost sho pedasag0");
-        System.out.println(search(ropes.get(0), 13).value + " dorost sho pedasag1");
-        split(search(ropes.get(0), 16), 16 ,ropes.get(0) );
+//        System.out.println(getIndexInANode(ropes.get(0),13) );
+//        System.out.println(search(ropes.get(0), 13).value );
+        split(search(ropes.get(0), 5), 5 ,ropes.get(0) );
+        System.out.println(ropes.get(2).right.data);
+        status();
+
 
     }
     //ba jam va printleaf lenght jaye node peyda mishe ba tafrigh jaye harf badam algorithm ye site to history mrhan
