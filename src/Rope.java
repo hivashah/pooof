@@ -98,9 +98,11 @@ public class Rope {
         return res;
     }
 
-    public static void split(RopeNode root , int i , RopeNode realRoot){
+    public static ArrayList<RopeNode> split(RopeNode root , int i , RopeNode realRoot){
 //        System.out.println(i + " i");
+        ArrayList<RopeNode>nodes=new ArrayList<>();
         int positionInNode=getIndexInANode(realRoot,i);
+        RopeNode  firstStringRoot=new RopeNode();
 //        System.out.println(positionInNode + " positionIndex");
 //        RopeNode root = search(root, i);
 //        System.out.println(root.data + " root.data");
@@ -110,7 +112,7 @@ public class Rope {
 //        System.out.println(temp.value);
         if (positionInNode==root.data.length()){
             if(realRoot.right==root){
-                RopeNode firstStringRoot = temp.left ;
+                firstStringRoot = temp.left ;
                 temp.left = null ;
 
                 ropes.add(firstStringRoot);
@@ -124,14 +126,16 @@ public class Rope {
             while (temp.left != null){
 //                System.out.println("akhareshe2");
                 if (temp.left.right==root){
-                    RopeNode firstStringRoot = temp.left ;
+                     firstStringRoot = temp.left ;
                     temp.left = null ;
 
                     ropes.add(firstStringRoot);
+                    nodes.add(firstStringRoot);
 //                    System.out.println(firstStringRoot.value + " fitstString.value");
                     temp.value -= firstStringRoot.value;
 //                    System.out.println(temp.value + " temp.value");
                     ropes.remove(realRoot);
+                    nodes.add(realRoot);
                     ropes.add(realRoot);
                     break;
                 }else {
@@ -153,7 +157,7 @@ public class Rope {
 //            System.out.println(mainRope.left.data + "left"); //taghriban dorost mide
 //            System.out.println(mainRope.right.data + "right"); // nemide hichi
 //            System.out.println(mainRope.value);
-                RopeNode firstStringRoot = temp.left ;
+                 firstStringRoot = temp.left ;
                 temp.left = null ;
 //                firstStringRoot.right=null;
                 temp.right=null;
@@ -187,7 +191,7 @@ public class Rope {
             while (temp.left != null){
 //                System.out.println("akhareshe2");
                 if (temp.left.right==root){
-                    RopeNode firstStringRoot = temp.left ;
+                     firstStringRoot = temp.left ;
                     temp.left = null ;
                     firstStringRoot.right=null;
                     firstStringRoot = concatInMethod(firstStringRoot,ropeNodeL);
@@ -205,8 +209,9 @@ public class Rope {
                 }
             }
         }
-
-
+        nodes.add(firstStringRoot);
+        nodes.add(realRoot);
+        return nodes;
     }
 
 
@@ -261,6 +266,12 @@ public class Rope {
         }
         return node.data.charAt(i);
     }
+    public static void insert(int i,RopeNode root1,RopeNode root2){
+        ArrayList<RopeNode>nodes=new ArrayList<>();
+       nodes=split(search(root1,i),i,root1);
+       concat(concat(nodes.get(0),root2),nodes.get(1));
+
+    }
 
 
 
@@ -294,7 +305,8 @@ public class Rope {
 //        System.out.println(getIndexInANode(ropes.get(0),13) );
 //        System.out.println(search(ropes.get(0), 13).value );
 //        concat(ropes.get(0),ropes.get(1));
-        split(search(ropes.get(1), 7),7  ,ropes.get(1) );
+//        split(search(ropes.get(1), 7),7  ,ropes.get(1) );
+        insert(5, ropes.get(0),ropes.get(1) );
 //        System.out.println(ropes.get(2).right.data);
         status();
 
