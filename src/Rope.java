@@ -58,12 +58,12 @@ public class Rope {
 
         // If left child exists, check for leaf
         // recursively
-        if (root.left != null&&root.right != null){
+        if (root.left != null){
             printLeafNodes(root.left);}
 
         // If right child exists, check for leaf
         // recursively
-        if (root.right != null&&root.left != null){
+        if (root.right != null){
             printLeafNodes(root.right);}
     }
 
@@ -99,10 +99,10 @@ public class Rope {
     }
 
     public static ArrayList<RopeNode> split(RopeNode root , int i , RopeNode realRoot){
-//        System.out.println(i + " i");
         ArrayList<RopeNode>nodes=new ArrayList<>();
+        RopeNode firstStringRoot=new RopeNode();
+//        System.out.println(i + " i");
         int positionInNode=getIndexInANode(realRoot,i);
-        RopeNode  firstStringRoot=new RopeNode();
 //        System.out.println(positionInNode + " positionIndex");
 //        RopeNode root = search(root, i);
 //        System.out.println(root.data + " root.data");
@@ -111,17 +111,6 @@ public class Rope {
 //        System.out.println(temp.right.data+"poooooooof");
 //        System.out.println(temp.value);
         if (positionInNode==root.data.length()){
-            if(realRoot.right==root){
-                firstStringRoot = temp.left ;
-                temp.left = null ;
-
-                ropes.add(firstStringRoot);
-//                    System.out.println(firstStringRoot.value + " fitstString.value");
-                temp.value -= firstStringRoot.value;
-//                    System.out.println(temp.value + " temp.value");
-                ropes.remove(realRoot);
-                ropes.add(realRoot);
-            }
             System.out.println("akhareshe");
             while (temp.left != null){
 //                System.out.println("akhareshe2");
@@ -130,12 +119,10 @@ public class Rope {
                     temp.left = null ;
 
                     ropes.add(firstStringRoot);
-                    nodes.add(firstStringRoot);
 //                    System.out.println(firstStringRoot.value + " fitstString.value");
                     temp.value -= firstStringRoot.value;
 //                    System.out.println(temp.value + " temp.value");
                     ropes.remove(realRoot);
-                    nodes.add(realRoot);
                     ropes.add(realRoot);
                     break;
                 }else {
@@ -143,35 +130,6 @@ public class Rope {
                 }
             }
         }else {
-            if(realRoot.right==root){
-                RopeNode ropeNodeL = new RopeNode();
-                RopeNode ropeNodeR = new RopeNode();
-//            root = mainRope.left;
-//            mainRope.left = ropeNodeL;
-//            mainRope.right = ropeNodeR ;
-                ropeNodeL.data = root.data.substring(0,positionInNode);
-                ropeNodeL.value = root.data.substring(0,positionInNode).length();
-//            mainRope.value = ropeNodeL.value;
-                ropeNodeR.data = root.data.substring(positionInNode,root.data.length());
-                ropeNodeR.value = root.data.substring(positionInNode,root.data.length()).length();
-//            System.out.println(mainRope.left.data + "left"); //taghriban dorost mide
-//            System.out.println(mainRope.right.data + "right"); // nemide hichi
-//            System.out.println(mainRope.value);
-                 firstStringRoot = temp.left ;
-                temp.left = null ;
-//                firstStringRoot.right=null;
-                temp.right=null;
-                firstStringRoot = concatInMethod(firstStringRoot,ropeNodeL);
-
-                ropes.add(firstStringRoot);
-//                    System.out.println(firstStringRoot.value + " fitstString.value");
-                temp.value -= firstStringRoot.value;
-//                    System.out.println(temp.value + " temp.value");
-                ropes.remove(realRoot);
-                realRoot = concatInMethod(ropeNodeR , realRoot);
-                ropes.add(realRoot);
-
-            }
 
 //            RopeNode mainRope = new RopeNode();
             RopeNode ropeNodeL = new RopeNode();
@@ -195,7 +153,6 @@ public class Rope {
                     temp.left = null ;
                     firstStringRoot.right=null;
                     firstStringRoot = concatInMethod(firstStringRoot,ropeNodeL);
-
                     ropes.add(firstStringRoot);
 //                    System.out.println(firstStringRoot.value + " fitstString.value");
                     temp.value -= firstStringRoot.value;
@@ -212,7 +169,21 @@ public class Rope {
         nodes.add(firstStringRoot);
         nodes.add(realRoot);
         return nodes;
+
+
     }
+    public static void delete(int i,int j,RopeNode root){
+        ArrayList<RopeNode>nodes=new ArrayList<>();
+        ArrayList<RopeNode>nodes1=new ArrayList<>();
+        nodes=split(search(root,j),j,root);
+        status();
+        nodes1=split(search(nodes.get(0),i),i,nodes.get(0));
+        System.out.println(nodes1);
+        status();
+        concatInMethod(nodes1.get(0),nodes.get(1));
+
+    }
+
 
 
     public static RopeNode concat(RopeNode ropeNode1 , RopeNode ropeNode2){
@@ -230,7 +201,7 @@ public class Rope {
 
     public static RopeNode concatInMethod(RopeNode ropeNode1 , RopeNode ropeNode2){
         RopeNode newRoot = new RopeNode();
-        newRoot.value = ropeNode1.value;
+//        newRoot.value = ropeNode1.value + ropeNode1.right.value ;
         newRoot.left = ropeNode1;
         newRoot.right = ropeNode2;
         return newRoot;
@@ -266,12 +237,6 @@ public class Rope {
         }
         return node.data.charAt(i);
     }
-    public static void insert(int i,RopeNode root1,RopeNode root2){
-        ArrayList<RopeNode>nodes=new ArrayList<>();
-       nodes=split(search(root1,i),i,root1);
-       concat(concat(nodes.get(0),root2),nodes.get(1));
-
-    }
 
 
 
@@ -304,13 +269,43 @@ public class Rope {
 
 //        System.out.println(getIndexInANode(ropes.get(0),13) );
 //        System.out.println(search(ropes.get(0), 13).value );
-//        concat(ropes.get(0),ropes.get(1));
-//        split(search(ropes.get(1), 7),7  ,ropes.get(1) );
-        insert(5, ropes.get(0),ropes.get(1) );
+//        split(search(ropes.get(0), 2), 2 ,ropes.get(0) );
 //        System.out.println(ropes.get(2).right.data);
+delete(2,4,ropes.get(0));
         status();
 
 
     }
     //ba jam va printleaf lenght jaye node peyda mishe ba tafrigh jaye harf badam algorithm ye site to history mrhan
+}
+class RopeNode {
+    int value;
+    String data;
+    RopeNode left, right;
+
+
+    public RopeNode(int key, String data, RopeNode left, RopeNode right) {
+        this.value = key;
+        this.data = data;
+        this.left = left;
+        this.right = right;
+    }
+
+    public RopeNode(String data) {
+        this.data = data;
+        left = null;
+        right = null;
+        value = data.length();
+    }
+    boolean isLeaf() { return left == null ? right == null : false; }
+
+
+    public RopeNode(){
+        data = null;
+        left = null;
+        right = null;
+        value = 0;
+    }
+
+
 }
