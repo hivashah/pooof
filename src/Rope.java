@@ -275,7 +275,7 @@ public class Rope {
         nodes1=splitInMethod(search(nodes.get(0),i),i,nodes.get(0));
         ropes.remove(nodes1.get(1));
         System.out.println("ey baba");
-       ;
+        ;
         ropes.add( concatInMethod(nodes1.get(0),nodes.get(1)));
 
     }
@@ -356,7 +356,7 @@ public class Rope {
 
         RopeNode newRopeNode;
 
-        delete(3,7,ropes.get(0));
+        delete(3,5,ropes.get(0));
         System.out.println("________________________");
         status();
 
@@ -396,3 +396,4 @@ class RopeNode {
 
 
 }
+//serfan vase git
