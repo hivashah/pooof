@@ -50,11 +50,14 @@ public class Rope {
             return;
 
         // If node is leaf node, print its data
-        if (root.left == null &&
-                root.right == null)
+
+
+        if (root.left == null && root.right == null)
         {
-            System.out.print(root.data);
-            return;
+            if (root.data!=null){  //ke null print nakone hey
+                System.out.print(root.data);
+                return;
+            }
         }
 
         // If left child exists, check for leaf
@@ -65,7 +68,8 @@ public class Rope {
         // If right child exists, check for leaf
         // recursively
         if (root.right != null){
-            printLeafNodes(root.right);}
+            printLeafNodes(root.right);
+        }
     }
 
     public static int getIndexInANode(RopeNode root, int i ) {
@@ -225,6 +229,7 @@ public class Rope {
                 ropeNodeL.value = root.data.substring(0, positionInNode).length();
                 ropeNodeR.data = root.data.substring(positionInNode, root.data.length());
                 ropeNodeR.value = root.data.substring(positionInNode, root.data.length()).length();
+
                 firstStringRoot = temp.left;
                 temp.left = null;
                 temp.right = null;
@@ -406,10 +411,17 @@ public class Rope {
 
 //        System.out.println("________________________");
 //        System.out.println(index(rope.root , 0));
-
-
-        int whichString = 3;
-        delete(3,6,ropes.get(whichString) ,whichString);
+        int whichString = 0;
+//        status();
+//        System.out.println(")____________(");
+//        concat(ropes.get(0),ropes.get(1));
+//        status();
+//        System.out.println("___________________");
+//        System.out.println(index(ropes.get(0),12));//bug: shahrokh ro kolan hesab nemikone
+//        System.out.println(search(ropes.get(0),12).data);
+//        delete(2,20,ropes.get(0) ,0);
+        whichString = 0;
+        delete(2,9,ropes.get(0) ,whichString);
 //        System.out.println(search(rope.root , 0).data);
         status();
 
