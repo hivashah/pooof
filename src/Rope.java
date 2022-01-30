@@ -1,198 +1,250 @@
-
-import java.io.*;
-import java.util.Scanner;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-public class Trie {
-    //    public static int count = 0;
-    public static TrieNode root;
+import java.util.Collections;
+import java.util.Stack;
 
-    Trie() {
+public class Rope {
+    public static ArrayList<RopeNode> ropes = new ArrayList<>();
+    public RopeNode root = new RopeNode();
+    public static boolean splitNeed = true;
+    public void structRope(String str) {
+        RopeNode ropeNode = new RopeNode(str);
+        RopeNode newRoot = new RopeNode();
+        newRoot.left = root;
+        newRoot.right = ropeNode;
+        newRoot.value = newRoot.left.value;
+        if (newRoot.left.right != null)
+            newRoot.value += newRoot.left.right.value;
+        root = newRoot;
     }
-
-    public class TrieNode {
-        HashMap<Character, TrieNode> children;
-        char c;
-        boolean isWord;
-
-        public TrieNode(char c) {
-            this.c = c;
-            children = new HashMap<>();
-            isWord = false;
-        }
-
-        public TrieNode() {
-            children = new HashMap<>();
-        }
-//        public void insert(String word)
-//        //insert khodam
-//        {
-//            char ch = word.charAt(0);//getting the first char to new a trienode to traverse
-//            TrieNode child = children.get(ch);
-//            int i = 0;
-//            for (i = 0; i < word.length(); i++) {
-//                ch = word.charAt(i);
-//                child = children.get(ch);
-//                if (child == null) {
-//                    child=new TrieNode(ch);
-//                    children.put(ch, child);
-//                    System.out.println(ch + "ch");
-//                } else {
-//                    System.out.println("falsenj");
-//                }
-//
-//            }
-//            System.out.println(word.charAt(word.length() - 1) + "bayad a");
-//            child = children.get(word.charAt(word.length() - 1));
-//            System.out.println(child);
-//            child.isWord = true;
-//        }
-
-        public void insert(String word) {
-            if (word == null || word.isEmpty())
-                return;
-            char firstChar = word.charAt(0);
-            TrieNode child = children.get(firstChar);
-            if (child == null) {
-                child = new TrieNode(firstChar);
-                children.put(firstChar, child);
+    public void add(String newString){
+        while (newString!=null){
+            if (newString.contains(" ")) {
+                structRope(newString.substring(0, newString.indexOf(' '))+'_');
+                newString = newString.substring(newString.indexOf(' ') + 1, newString.length());
+            }else {
+                structRope(newString.substring(0, newString.length()));
+                break;
             }
-            if (word.length() > 1)
-                child.insert(word.substring(1));
-            else
-                child.isWord = true;
         }
-    }
-    public boolean find(String prefix, boolean exact) {
-        TrieNode lastNode = root;
-        for (char c : prefix.toCharArray()) {
-            lastNode = lastNode.children.get(c);
-            if (lastNode == null)
-                return false;
-        }
-        return !exact || lastNode.isWord;
+        ropes.add(root);
     }
 
+    public static void status(){
+        for (int i = 0; i < ropes.size(); i++) {
+            printLeafNodes(ropes.get(i));
+            System.out.println("\n");
+        }
 
-    public boolean find(String prefix) {
-        return find(prefix, false);
     }
 
-
-    public void suggestHelper(TrieNode root, List<String> list, StringBuffer curr) {
-        if (root.isWord) {
-            list.add(curr.toString());
-        }
-        if (root.children == null || root.children.isEmpty())
+    public static void printLeafNodes(RopeNode root) {
+        if (root == null) {
             return;
-        for (TrieNode child : root.children.values()) {
-            suggestHelper(child, list, curr.append(child.c));
-            curr.setLength(curr.length() - 1);
-
         }
-    }
-
-    public ArrayList<String> suggest(String prefix) {
-        ArrayList<String> list = new ArrayList<>();
-        TrieNode lastNode = root;
-        StringBuffer curr = new StringBuffer();
-        for (char c : prefix.toCharArray()) {
-            lastNode = lastNode.children.get(c);
-            if (lastNode == null)
-                return list;
-            curr.append(c);
-        }
-        suggestHelper(lastNode, list, curr);
-        return list;
-    }
-
-    //
-//        public  boolean search(String word){
-//            char firstChar = word.charAt(0);
-//            TrieNode child = children.get(firstChar);
-//            if (child == null) {
-//                System.out.println("yek");
-//                return false;
-//            }
-//
-//            if (word.length() > 1){
-//                System.out.println("do");
-//                child.search(word.substring(1));}
-//            else{
-//                System.out.println("se");
-//                return true;}
-//            System.out.println("chaar");
-//            return true;
-//        }
-    public Trie(List<String> words) {
-        root = new TrieNode();
-        for (String word : words)
-            root.insert(word);
-
-    }
-//
-//    public boolean find(String prefix) {
-//        TrieNode current = root;
-//        for (char c : prefix.toCharArray()) {
-//            current = current.children.get(c);
-//            if (current == null)
-//                return false;
-//        }
-//        return  current.isWord;
-//    }
-
-    public static ArrayList<String> insertFile(String name) throws IOException {
-        ArrayList<String> words = new ArrayList<>();
-        File file = new File(
-                "/Users/mac/Desktop/trie/" + name);
-        BufferedReader br
-                = new BufferedReader(new FileReader(file));
-        String st;
-        while ((st = br.readLine()) != null) {
-            System.out.println("words" + st);
-            words.add(st);
-        }
-        return words;
-    }
-
-
-    public void writeFile(String name) {
-        try {
-            File myObj = new File(name);
-            if (myObj.createNewFile()) {
-                System.out.println("File created: " + myObj.getName());
-            } else {
-                System.out.println("File already exists.");
+        if (root.left == null && root.right == null) {
+            if (root.data!=null){  //ke null print nakone hey
+                System.out.print(root.data);
+                return;
             }
-        } catch (IOException e) {
-            System.out.println("An error occurred.");
-            e.printStackTrace();
+        }
+        if (root.left != null){
+            printLeafNodes(root.left);}
+        if (root.right != null){
+            printLeafNodes(root.right);
         }
     }
 
-    public static ArrayList<String> printSuggestions(String prefix, Trie trie) {
-        ArrayList<String> suggestions = new ArrayList<>();
-        System.out.println(trie.suggest(prefix) + "suggest");
-        suggestions = trie.suggest(prefix);
-        for (int i = 0; i < 3; i++)
-            System.out.println(suggestions.get(i));
-        return suggestions;
+    public static int getIndexInANode(RopeNode root, int i ) {
+        int count = 0;
+        int res=0;
+        ArrayList<Integer> saveNodeValue = new ArrayList<>();
+        Stack<RopeNode> stack = new Stack<>();
+        stack.push(root);
+        while (!stack.isEmpty() ) {
+            RopeNode node = stack.pop();
+            if (node.left != null) {
+                stack.add(node.left);
+            }
+            if (node.right != null) {
+                stack.add(node.right);
+            } if (node.isLeaf()) {
+                saveNodeValue.add(node.value);
+            }
+        }
+
+        Collections.reverse(saveNodeValue);
+        for (int j = 0; j < saveNodeValue.size() ; j++) {
+            if (count+saveNodeValue.get(j)<i) {
+                count += saveNodeValue.get(j);
+            }else {
+                break;
+            }
+        }
+        res = i-count ;
+        return res;
+    }
+    public static ArrayList<RopeNode> splitInMethod(RopeNode realRoot , int index){
+        ArrayList<RopeNode>nodes = new ArrayList<>();
+        RopeNode appropriateNode = search(realRoot , index);
+        RopeNode rightSplitedRopeRoot = new RopeNode();
+        RopeNode temp1 = new RopeNode();
+        RopeNode rightProcessor = new RopeNode();
+        RopeNode tmp = realRoot ;
+        int x = ropes.indexOf(realRoot);
+        ropes.remove(realRoot);
+        int count = 0;
+        int positionInNode = getIndexInANode(realRoot,index) ;
+        boolean isTrue = false;
+        temp1 = rightSplitedRopeRoot;
+        while (tmp.right != search(realRoot, index)){
+            if (realRoot.right.right==search(realRoot, index)){
+                index = index - tmp.value;
+                tmp=tmp.right;
+                isTrue=true;
+                rightSplitedRopeRoot.right = tmp.right;
+                temp1 = rightSplitedRopeRoot;
+                break;
+            }
+            if (index < tmp.value){
+                if (rightSplitedRopeRoot.right == null) {
+                    rightSplitedRopeRoot.right = tmp.right;
+                    rightSplitedRopeRoot.left = new RopeNode();
+                    temp1 = rightSplitedRopeRoot;
+                    temp1=temp1.left;
+                }
+                else {
+                    if (temp1.left!= null && temp1.left.right!=null) {
+                        temp1.value = temp1.left.value + temp1.left.right.value;
+                    }
+                    temp1.right = tmp.right;
+                    tmp.right=null;
+                    temp1.left = new RopeNode();
+                }
+                if (tmp.left != null){
+                    if (count==0) {
+                        tmp = tmp.left;
+                        realRoot = tmp;
+                    }else {
+                        rightProcessor=tmp ;
+                        tmp.right = null;
+                        rightProcessor.left.right=null;
+                        rightProcessor=rightProcessor.left.left;
+                        rightProcessor.left.right=null;
+                        break;
+                    }
+                }
+            }
+            else {
+                count++;
+                index = index - tmp.value;
+                if (tmp.right != null){
+                    tmp = tmp.right;
+                }else {
+                    break;
+                }
+
+            }
+        }
+        RopeNode ropeNodeL = new RopeNode();
+        RopeNode ropeNodeR = new RopeNode();
+        if (positionInNode == appropriateNode.data.length()){
+            realRoot = concatInMethod(realRoot , tmp.right);
+            tmp.right = null;
+        }else if(tmp.value - index==0){
+            if (isTrue){
+                rightSplitedRopeRoot.right = realRoot.right.right;
+                tmp.right = null;
+            }else {
+                rightSplitedRopeRoot = concatInMethod(tmp.right, rightSplitedRopeRoot);
+                tmp.right = null;
+            }
+        }
+        else {
+            ropeNodeL.data = appropriateNode.data.substring(0,positionInNode);
+            ropeNodeL.value = appropriateNode.data.substring(0,positionInNode).length();
+            tmp.right = ropeNodeL;
+            ropeNodeR.data = appropriateNode.data.substring(positionInNode,appropriateNode.data.length());
+            ropeNodeR.value = appropriateNode.data.substring(positionInNode,appropriateNode.data.length()).length();
+            if (isTrue){
+                rightProcessor.right = ropeNodeR;
+                rightSplitedRopeRoot = rightProcessor;
+            }else {
+                temp1.left = ropeNodeR;
+            }
+        }
+        nodes.add(realRoot);
+        nodes.add(rightSplitedRopeRoot);
+
+        if (splitNeed) {
+            ropes.add(x, realRoot);
+            ropes.add(x + 1, rightSplitedRopeRoot);
+        }
+        return nodes;
     }
 
-    public static void main(String[] args) throws IOException {
-        ArrayList<String> words = new ArrayList<>();
 
-//        ArrayList<String>suggestions;
-//        int count = 0;
-//        Scanner sc = new Scanner(System.in);
-//        System.out.println("please enter the word: ");
-//        String string = sc.next();
-        words = insertFile("filename.txt");
-        Trie trie = new Trie(words);
-        printSuggestions("h", trie);
-
-
+    public static void delete(int i,int j,RopeNode root ,int whichString){
+        splitNeed=false;
+        ArrayList<RopeNode>nodes=new ArrayList<>();
+        ArrayList<RopeNode>nodes1=new ArrayList<>();
+        nodes=splitInMethod(root,j);
+        nodes1=splitInMethod(nodes.get(0),i);
+        ropes.add( whichString ,concatInMethod(nodes1.get(0),nodes.get(1)));
+        splitNeed=true;
     }
 
+    public static RopeNode concat(RopeNode ropeNode1 , RopeNode ropeNode2){
+        RopeNode newRoot = new RopeNode();
+        if (ropeNode1.right!=null) {
+            newRoot.value = ropeNode1.value + ropeNode1.right.value;
+        }
+        newRoot.left = ropeNode1;
+        newRoot.right = ropeNode2;
+        int x = ropes.indexOf(ropeNode1);
+        ropes.add(x,newRoot);
+        ropes.remove(x+1);
+        ropes.remove(ropeNode2);
+        return newRoot;
+    }
+
+    public static RopeNode concatInMethod(RopeNode ropeNode1 , RopeNode ropeNode2){
+        RopeNode newRoot = new RopeNode();
+        if (ropeNode1.right!=null) {
+            newRoot.value = ropeNode1.value + ropeNode1.right.value;
+        }
+        newRoot.left = ropeNode1;
+        newRoot.right = ropeNode2;
+        return newRoot;
+    }
+
+    public static RopeNode search(RopeNode node,int i){
+
+        if (node.value <= i && node.right!=null){
+            return search(node.right, i - node.value);
+        }
+        if (node.left!=null) {
+            return search(node.left, i);
+        }
+        return node;
+    }
+
+    public static char index(RopeNode node,int i){
+        if (node.value <= i && node.right!=null){
+            return index(node.right, i - node.value);
+        }
+        if (node.left!=null) {
+            return index(node.left, i);
+        }
+        return node.data.charAt(i);
+    }
+
+    public static void insert(RopeNode ropeNode1, RopeNode ropeNode2, int i){
+        splitNeed=false;
+        int x = ropes.indexOf(ropeNode1);
+        int y = ropes.indexOf(ropeNode2);
+        ArrayList<RopeNode> ropeNodes = splitInMethod(ropeNode1,i);
+        ropes.add(x, concatInMethod(concatInMethod(ropeNodes.get(0),ropeNode2),ropeNodes.get(1)));
+        ropes.remove(ropeNode2);
+        splitNeed=true;
+    }
 }
